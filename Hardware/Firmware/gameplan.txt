@@ -20,6 +20,8 @@
 
 11. The hosts' device interpretes the transaction receipts and confirms the debit on the users accounts. The host device issues an encoded ackwoledgement beacon to the clients device confirming the transaction finally. The host device sends a modified version of the transaction receipt to the CLOUD to update Users account.
 
+    
+
 
 
 
