@@ -128,7 +128,7 @@ void testdrawline() {
     display.drawLine(0, 0, i, display.height()-1, SSD1306_WHITE);
     display.display(); // Update screen with each newly-drawn line
     delay(1);
-  }
+  } 
   for(i=0; i<display.height(); i+=4) {
     display.drawLine(0, 0, display.width()-1, i, SSD1306_WHITE);
     display.display();
