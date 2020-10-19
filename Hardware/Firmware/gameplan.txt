@@ -1,0 +1,29 @@
+
+
+
+1. Device comes on and detects the closest bluetooth device...
+2. The desired client is selected (the clients available appear on the screen)
+3. When it's paired the clients and host screen both flash and beep
+4. An amount is entered for transaction
+5. A pin is entered
+
+6. The amount to be transfered is compared to available balance.. is less or equal to the balance, the process continues else it out put "insufficient balance" on the screen and asks the user to either enter an appropriate amount or cancel transaction.
+
+
+7. The device ID, the clients Device ID, the amount, time of transaction to the nano second; the pin are written to a JSON file 
+
+8. Transaction token existing as a JSON file is encrypted and sent to the client device.
+
+9 The client Device Decrypts the message, and checks the consistency of the host and client ID, if Okay , proceeds with the transaction else outputs "transaction error on the device"
+
+10. The appropriate amount is credited to the clients' wallet and a transaction ID is generated, which gets encrypted and transfered to both the host and CLOUD.
+
+11. The hosts' device interpretes the transaction receipts and confirms the debit on the users accounts. The host device issues an encoded ackwoledgement beacon to the clients device confirming the transaction finally. The host device sends a modified version of the transaction receipt to the CLOUD to update Users account.
+
+
+
+
+INTERFACES
+1. bluetooth
+3. LCD screen SSD1306
+2. UART to SIM800
