@@ -1,0 +1,7 @@
+Scanning...
+I2C device found at address 0x3C  !
+done
+
+for esp screen
+
+info on esp32 library for windows https://github.com/espressif/arduino-esp32/blob/master/docs/arduino-ide/windows.md

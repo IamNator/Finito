@@ -29,3 +29,6 @@ INTERFACES
 1. bluetooth
 3. LCD screen SSD1306
 2. UART to SIM800
+
+
+
