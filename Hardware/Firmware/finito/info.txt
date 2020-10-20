@@ -5,3 +5,15 @@ done
 for esp screen
 
 info on esp32 library for windows https://github.com/espressif/arduino-esp32/blob/master/docs/arduino-ide/windows.md
+
+
+on sim800l
+
+ Hi, I tell you my experience with an A6 Mini (Goouuu Tech) module connected to a clone of Arduino Nano in a breadboard
+I've tried all that's mentioned in this post (send multiple AT's till module syncs, pulling up/down several pins, etc, etc)
+Finally, what I just did was connect a HUGE 4700uF capacitor to supply rail, this solved everything
+I didn´t connect PWR pin, nor RESET pin, just +5V, GND and Tx/Rx (in 3,3V logic, need to use a level adaptor to speak to Nano board, I used an inexpensive TLL Open Collector AND gate) and it worked perfectly
+I settled baudrate to 9600 just once using the AT commands described in the manual, and no need for further adjustement. Every time I connect power, the module boots in 2/3 seconds, NETLED starts flashing and I can start send AT commands
+I use SoftwareSerial at 9600 to chat with the A6, taking care of the fact that it´s a HALF DUPLEX software port, you need to carefully program the handshaking with the A6 since it sends local echo to commands
+Hope this helps
+Regards
