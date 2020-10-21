@@ -5,8 +5,6 @@ done
 for esp screen
 
 info on esp32 library for windows https://github.com/espressif/arduino-esp32/blob/master/docs/arduino-ide/windows.md
-
-
 on sim800l
 
  Hi, I tell you my experience with an A6 Mini (Goouuu Tech) module connected to a clone of Arduino Nano in a breadboard
