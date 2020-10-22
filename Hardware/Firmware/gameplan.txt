@@ -31,4 +31,7 @@ INTERFACES
 2. UART to SIM800
 
 
+Display By Defaults
 
+1. Finito (for 4 seconds)
+2. The Persons Name and Account number

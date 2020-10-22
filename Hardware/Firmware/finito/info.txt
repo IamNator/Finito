@@ -15,3 +15,9 @@ I settled baudrate to 9600 just once using the AT commands described in the manu
 I use SoftwareSerial at 9600 to chat with the A6, taking care of the fact that it´s a HALF DUPLEX software port, you need to carefully program the handshaking with the A6 since it sends local echo to commands
 Hope this helps
 Regards
+
+
+
+
+
+

@@ -1,23 +1,29 @@
 #include "Wire.h"
 #include "SSD1306.h"  //For display
 #include <ArduinoJson.h> //For Handling Json diles
-#include "BluetoothSerial.h" //For Bluetooth
 
-/**********Bluetooth config***********/
-#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
-#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
-#endif
-/***********************/
+#include "WiFi.h" 
+#include "ESPAsyncWebServer.h"
+#include <HTTPClient.h>
+
+AsyncWebServer server(80); // Port 80 for wifi server 
+
+//For control
+#define SEND 0
+#define RECEIVE 1
+volatile int CHANGE_TRANSACTION_TYPE = 0;
+String sendToken;
+
 
 SSD1306 display(0x3C, 5, 4); // display(I2C Address, SDA_Pin, SCL_Pin)
-BluetoothSerial SerialBT; //For onboard esp32 bluetooth
+
 
 
 //serial speed of both the SIM800L and the serial monitor
-const int BAUD_RATE = 115200;
+const int BAUD_RATE = 9600;
  
 
-/********************************/
+/******************************/
 
 /******Variables**************/
 typedef struct USER{
@@ -32,7 +38,7 @@ typedef struct USER{
 
 
 typedef struct TRANSACTION{
-  USER *USE;
+  USER *User;
   String amount;
   String transactionID;
   String transaction_time;
@@ -41,13 +47,21 @@ typedef struct TRANSACTION{
 
  USER user;
  TRANSACTION transaction;
+ bool trans_status = false;
 /*******************************/
 
 /******Function Prototypes*******/
 void DisplayFinito();
-bool DisplayEnterPassword();
-void DisplayUserDetails(USER);
-void transanctionToken(TRANSACTION);
+void DisplayEnterPassword();
+void DisplayUserDetails(USER *);
+String GenerateTransanctionToken(TRANSACTION * transaction);
+void DisplayTransactionDone(TRANSACTION * transaction);
+void DisplayBalance(TRANSACTION * transaction);
+void DisplayConnectingToPayer();
+
+void MakePayment();
+void ReceivePayment();
+
 
 
 
@@ -57,42 +71,34 @@ void setup(){
   user.lname= "Oloruntegbe";
   user.account_number = "024435439";
   user.id = "343";
-  user.balance = 500000;
+  user.balance = "500,000.00";
   user.last_update_time = "4343554";
   user.password = "****";
 
-  transaction.USE = &user;
-  transaction.amount = 3435343;
+  transaction.User = &user;
+  transaction.amount = "3,435,343.78";
   transaction.transactionID = "423";
   transaction.transaction_time = "4534";
 
-
-  SerialBT.begin(user.id); //Starts onbaord serial bluetooth with name user_id
-    
   Serial.begin(BAUD_RATE);
   Serial.println("(setup)...Starting ...");
-  // starts and configures the SIM800L
-  DisplayEnterPassword(&user); 
+ 
+  DisplayEnterPassword(&user);
+  delay(1500);
   while( user.password != user.password);
   DisplayFinito();
+  delay(1500);
+
+  GenerateTransanctionToken(&transaction);
+  MakePayment(&transaction);//Testing
 
 }
 
 void loop(){
-//  DisplayUserDetails(user);
-//  transanctionToken(&transaction);
-  if (Serial.available()) {
-    SerialBT.write(Serial.read());
-  }
-  if (SerialBT.available()) {
-    Serial.write(SerialBT.read());
-  }
-  delay(1000);
+  //
 }
 
 /****************************************/
-//bool EnterPassword()
-
 
 
 void DisplayFinito(){
@@ -102,52 +108,182 @@ void DisplayFinito(){
   display.setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
   display.drawString(64, 20, "Finito");
   display.display();
-  delay(3500);
   display.clear();
 }
 
-bool DisplayEnterPassword(USER * user){
+void DisplayEnterPassword(USER *user){
   display.init();
   display.setFont(ArialMT_Plain_16);
   display.setColor(WHITE);
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.drawString(10, 10, "Enter PIN:\n" + user->password );
   display.display();
-  delay(5000);
   display.clear();
   
-  return true;
 }
 
-void DisplayUserDetails(USER user){
+void DisplayUserDetails(USER *user){
   //Fetch stored user details
   //display it on the screen
   display.init();
   display.setFont(ArialMT_Plain_16);
   display.setColor(WHITE);
   display.setTextAlignment(TEXT_ALIGN_LEFT);
-  display.drawString(10, 3, user.fname + "\n" + "\n" + user.lname + "\n" + user.account_number ); //Opeyemi \n 02344485"
+  display.drawString(10, 3, user->fname + "\n" + "\n" + user->lname + "\n" + user->account_number ); //Opeyemi \n 02344485"
   display.display();
-  delay(5000);
   display.clear();
 }
 
-bool initBluetooth(){
-   return false;
+String GenerateTransanctionToken(TRANSACTION *transaction){
+  // Use arduinojson.org/v6/assistant to compute the capacity.
+  StaticJsonDocument<300> doc;
+  doc["fname"] = transaction->User->fname;
+  doc["lname"] = transaction->User->lname;
+  doc["account number"] = transaction->User->account_number;
+  doc["user id"] = transaction->User->id;
+  doc["amount"] = transaction->amount;
+  doc["balance"] = transaction->User->balance;
+  doc["time"] = transaction->transaction_time;
+  doc["password"] = transaction->User->password;
+
+  
+  String output;
+  
+  serializeJson(doc, output);
+  Serial.println(output);
+  trans_status = true;
+  
+  return output; 
 }
 
-void transanctionToken(TRANSACTION *transaction){
-    // Use arduinojson.org/v6/assistant to compute the capacity.
-  StaticJsonDocument<300> doc;
-  doc["fname"] = transaction->USE->fname;
-  doc["lname"] = transaction->USE->lname;
-  doc["account name"] = transaction->USE->account_number;
-  doc["user id"] = transaction->USE->id;
-  doc["amount"] = transaction->amount;
-  doc["balance"] = transaction->USE->balance;
-  doc["time"] = transaction->transaction_time;
-  doc["password"] = transaction->USE->password;
+void DisplayTransactionDone(TRANSACTION * transaction, int type){
+  display.init();
+  display.setFont(ArialMT_Plain_16);
+  display.setColor(WHITE);
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  if(type){
+    display.drawString(10, 3, transaction->amount + "\nreceived from\n" +  transaction->User->lname ); //Opeyemi \n 02344485"
+  } else {
+    display.drawString(10, 3, transaction->amount + "\nsent to\n" +  transaction->User->lname ); //Opeyemi \n 02344485"
+  }
   
-  serializeJson(doc, Serial);
-// return true when package is sent  
+  display.display();
+  display.clear();
+  trans_status = false;
+}
+
+void DisplayBalance(TRANSACTION * transaction){
+  display.init();
+  display.setFont(ArialMT_Plain_16);
+  display.setColor(WHITE);
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.drawString(8, 3, "You have \nNGN" +  transaction->User->balance + "\nLeft" ); //Opeyemi \n 02344485"
+  display.display();
+  display.clear();
+}
+
+void DisplayConnectingToPayer(){
+  display.init();
+  display.setFont(ArialMT_Plain_16);
+  display.setColor(WHITE);
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.drawString(8, 3, "Connecting \nto\nPayer... " ); //Opeyemi \n 02344485"
+  display.display();
+  display.clear();
+}
+
+
+/******************************************************************/
+
+
+// void MakePayment(TRANSACTION *trans){
+
+//   // Set your access point network credentials
+//   const char * ssid = "Opeyemi";
+//   const char * password = "peaceunity";
+
+//   WiFi.softAP(ssid, password);//sets up ssid and password for board
+//   IPAddress IP = WiFi.softAPIP();
+//   Serial.print("AP IP address: ");
+//   Serial.println(IP);
+
+
+//   server.on("/getTransactionToken", HTTP_GET, [](AsyncWebServerRequest *request){
+//     request->send(200, "text/plain", sendToken );
+//   });
+    
+//   server.begin(); //Start Server
+
+//  // while(1){
+//     DisplayUserDetails(trans->User);
+//     if (trans_status){
+//     DisplayTransactionDone(trans, SEND);
+//     }
+//     DisplayBalance(trans);
+
+//     if(CHANGE_TRANSACTION_TYPE) return;
+//  // }
+
+// }
+
+
+
+/******************************************************************/
+
+void ReceivePayment(const char* serverName, TRANSACTION * transaction){
+
+  const char* serverNameGetTransactionToken = "http://192.168.4.1/getTransactionToken";
+ 
+  String transactionToken;
+  HTTPClient http;
+  
+  
+  
+
+/***********CONNECT TO PAYER**********/
+    // Set your access point network credentials
+    const char * ssid = "Galaxy";
+    const char * password = "hereNator";
+  
+    WiFi.begin(ssid, password);
+    while(WiFi.status() != WL_CONNECTED){
+      DisplayConnectingToPayer();
+    }; //waits till connection is done
+    if(WiFi.status() != WL_CONNECTED){
+     transactionToken = httpGETRequest(serverNameGetTransactionToken); 
+    }
+    Serial.println(transactionToken);
+
+
+    /*******SETTING UP HTTP SERVER***********/
+  
+    // Your IP address with path or Domain name with URL path 
+    http.begin(serverName);
+    
+    // Send HTTP POST request
+    int httpResponseCode = http.GET();
+    
+    if (httpResponseCode>0) {
+      Serial.print("HTTP Response code: ");
+      Serial.println(httpResponseCode);
+      transactionToken = http.getString();
+    }
+    else {
+      Serial.print("Error code: ");
+      Serial.println(httpResponseCode);
+    }
+    // Free resources
+    http.end();
+
+ 
+
+  while(1){
+  DisplayUserDetails(transaction->User);
+  if (trans_status){
+  DisplayTransactionDone(transaction, RECEIVE);
+  }
+  DisplayBalance(transaction);
+
+  if(CHANGE_TRANSACTION_TYPE) return; 
+  }
 }
