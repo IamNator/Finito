@@ -1,0 +1,312 @@
+ @media only screen and (max-width: 767px) {
+     .hero:after, .slider-image .slick-dots, .slider-avatar{
+         display: none!important;
+    }
+     .hero-text{
+         padding-top: 100px;
+    }
+     .hero-text h1{
+         font-size: 45px;
+         line-height: 48px;
+    }
+     .menu-nav .menu-navigation-wrapper{
+         padding: 40px 5% 40px calc(5% + 30px);
+    }
+     .menu-nav .menu-contact-info {
+         margin-top: 40px;
+    }
+     .menu-nav .menu-contact-info li{
+         margin-bottom: 15px;
+    }
+     .menu-nav .menu-contact-info li, .menu-nav .menu-contact-info a, .menu-nav .menu-contact-info span{
+         font-size: 20px;
+    }
+     .navbar-toggler {
+         color: #171f3c;
+         font-size: 35px;
+         line-height: 38px;
+         padding: 5px 0;
+         margin-right: 15px;
+    }
+     .setps-content li{
+         width: 100%;
+    }
+     .navbar-nav{
+         background-color: #fff;
+    }
+     .navbar-brand{
+         margin: 0;
+    }
+     .hero{
+         height: 100%;
+    }
+     .hero-text h2 {
+         font-size: 40px;
+    }
+     .hero-text p{
+         line-height: 26px;
+         font-size: 20px;
+    }
+     .slider-image{
+         top: 50px;
+    }
+     .icon-block{
+         margin-top: 20px;
+         margin-bottom: 25px;
+    }
+     .ply-btn{
+         top: 15%;
+         left: 25%;
+    }
+     .title-h2 {
+         font-size: 35px;
+    }
+     .subscribe-form .form-control{
+         width:90%;
+    }
+     .footer-top h5{
+         margin-bottom: 20px;
+         margin-top: 20px;
+    }
+     .bg-image-left{
+         min-height: 430px;
+    }
+     .team-bloc img{
+         width: 100%;
+    }
+     #about-features .row{
+         margin-left: 0;
+         margin-right: 0;
+    }
+     .bg-left {
+         padding: 80px 40px;
+    }
+     .navbar-header .navbar {
+         padding-left: 15px;
+         padding-right: 65px;
+    }
+     .right-nav ul li:first-child{
+         display: none;
+    }
+     .quote-form .form-control{
+         width: 100%;
+    }
+     .quote-form button{
+         top: 20px;
+         left: 0;
+    }
+     .icon-text, .table-plan{
+         margin-bottom: 35px;
+    }
+     .about-text h2{
+         margin-top: 25px;
+         margin-bottom: 45px;
+    }
+     .content-text h2{
+         font-size: 40px;
+         line-height: 45px;
+         margin-top: 25px;
+         margin-bottom: 10px;
+    }
+     .actions-btn a{
+         margin-bottom: 15px;
+    }
+     .slider-nav .slick-slide img{
+         margin: 0 auto;
+    }
+     .step-content-image:after{
+         left: 17px;
+    }
+     .slider-image:after, .step-content-image:after{
+         background-image: url(../images/device-mobile.png);
+         width: 297px;
+    }
+     .testimonial-slider .slick-slide {
+         margin: 0 24px;
+    }
+     .testimonial-slider .slick-list {
+         margin: 0 -18px;
+    }
+     .item-inner p {
+         padding-left: 0;
+         line-height: 22px;
+         padding-right: 0;
+    }
+     .testimonial-slider:after{
+         left: 0;
+    }
+     .item-inner{
+         padding: 18px;
+    }
+     .menu-nav-trigger{
+         right: 5%;
+    }
+     .content-info form{
+         margin-bottom:45px;
+    }
+     .table-price{
+         margin-bottom: 0;
+    }
+     .prinicng-container{
+         padding-bottom: 0;
+         padding-top: 20px;
+         margin-top: 20px;
+    }
+     .content-footer {
+         padding: 0;
+    }
+     .footer-top{
+         padding-top: 50px;
+    }
+     .newsletter-block{
+         top: 0;
+         margin-top: 30px;
+         margin-bottom: 30px;
+    }
+     .subscribe-form .btn{
+         width: 100%;
+    }
+    .service-block{
+    margin-bottom: 30px!important;    
+    }
+}
+ @media only screen and (max-width: 320px) {
+     .step-content-image:after {
+         left: 12px;
+    }
+     .slider-image:after{
+         left: -20px;
+    }
+}
+ @media only screen and (min-width: 768px) and (max-width: 1023px) {
+     .hero{
+         height: 100%;
+    }
+     .ply-btn {
+         top: 50%;
+         left: 40%;
+    }
+     .subscribe-form .form-control{
+         width: 80%;
+    }
+     .slider-image .slick-dots{
+         display:none!important;
+    }
+     .setps-content li, .subscribe-form .btn{
+         width:100%;
+    }
+     .avatar7 {
+         right: -130px;
+    }
+     .slider-image:after, .step-content-image:after{
+         background-image: url(../images/device-mobile.png);
+         width: 297px;
+    }
+     .hero-text h1{
+         font-size: 48px;
+         line-height: 52px;
+    }
+     .hero-text p{
+         font-size: 18px;
+         line-height: 25px;
+    }
+     .icobutton-arrow{
+         top:20px;
+    }
+     .menu-nav-trigger{
+         right: 4%;
+    }
+     .actions-btn .btn{
+         margin-bottom: 15px;
+    }
+     .avatar8{
+         left: -150px;
+    }
+     .testimonial-slider:after{
+         left: 50px;
+    }
+}
+ @media only screen and (min-width:1024px) and (max-width: 1200px) {
+     .hero{
+         height: 100%;
+    }
+     .subscribe-form .form-control{
+         width: 85%;
+    }
+     .slider-image .slick-dots{
+         right: -80px;
+    }
+     .menu-nav-trigger{
+         right: 5%;
+    }
+     .subscribe-form .btn{
+         width:100%;
+    }
+}
+ @media only screen and (min-width: 1170px) {
+     .menu-nav .menu-navigation-wrapper {
+         padding: 62px 20%;
+    }
+     .menu-nav .menu-navigation-wrapper::after {
+         clear: both;
+         content: "";
+         display: table;
+    }
+     .menu-nav .menu-half-block {
+         width: 50%;
+         float: left;
+    }
+     .menu-nav .menu-primary-nav {
+         margin-top: 0;
+    }
+     .menu-nav h2 {
+         font-size: 1.5rem;
+         margin-bottom: 4em;
+    }
+     .menu-nav .menu-primary-nav li {
+         margin: 2em 0;
+    }
+     .menu-nav .menu-primary-nav a {
+         font-size: 45px;
+    }
+     .menu-nav .menu-contact-info {
+         margin-top: 120px;
+         text-align: right;
+    }
+     .menu-nav .menu-contact-info li {
+         margin-bottom: 2.4em;
+    }
+     .menu-nav .menu-contact-info li, .menu-nav .menu-contact-info a, .menu-nav .menu-contact-info span {
+         font-size: 1.7rem;
+    }
+}
+ @media only screen and (min-width: 1600px) {
+     .hero-text{
+         padding-top: 250px;
+         padding-bottom: 250px;
+    }
+     .slider-image{
+         top:250px;
+    }
+     .menu-nav-trigger{
+         right: 12%;
+    }
+}
+ @media only screen and (min-width: 1920px) {
+     .hero-text{
+         padding-top: 290px;
+         padding-bottom: 290px;
+    }
+     .slider-image{
+         top:320px;
+    }
+     .menu-nav-trigger{
+         right: 20%;
+    }
+   
+}
+ @media only screen and (min-width: 2000px) {
+.warpper .container{
+    max-width: 1400px;
+ }
+}

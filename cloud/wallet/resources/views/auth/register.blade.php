@@ -3,85 +3,74 @@
     Authentication
 @endsection
 @section('content')
- <!-- App Capsule -->
- <div id="appCapsule">
-    <h1 class="" style="font-size: 40px;font-family: courier,arial,helvetica;color: #2b98ef;text-align: center;">Finito Cloud</h1>
-    <div class="section mt-2 text-center">
-        <h1>Register</h1>
-        <h4>Fill the form to register</h4>
-    </div>
-    <div class="section mb-5 p-2">
 
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
-            <div class="card">
-                <div class="card-body pb-1">
-                    <div class="form-group basic">
-                        <div class="input-wrapper">
-                            <label class="label" for="name">Full Name</label>
-                            <input id="text" type="text" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                            <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
-                        </div>
-                    </div>
-
-                    <div class="form-group basic">
-                        <div class="input-wrapper">
-                            <label class="label" for="email1">E-mail</label>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                            @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                            <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
-                        </div>
-                    </div>
-
-                    <div class="form-group basic">
-                        <div class="input-wrapper">
-                            <label class="label" for="password1">Password</label>
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-                            @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                            <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
-                        </div>
-                    </div>
-                    <div class="form-group basic">
-                        <div class="input-wrapper">
-                            <label class="label" for="password-confirm">Confirm Password</label>
-                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            <i class="clear-input"><ion-icon name="close-circle"></ion-icon></i>
-                        </div>
-                    </div>
-
+ <!--breadcrumb area-->
+ <section class="breadcrumb-area gradient-overlay" style="background: url('{{ url('') }}/assets/images/banner/3.jpg');">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="site-breadcrumb">
+                    <h2>Register Account</h2>
                 </div>
             </div>
-
-
-            <div class="form-links mt-2">
-                <div>
-                <a href="{{ route('login') }}">Login Now</a>
-                </div>
-                <div><a href="{{ route('login') }}" class="text-muted">Forgot Password?</a></div>
-            </div>
-
-            <div class="form-button-group  transparent">
-                <button type="submit" class="btn btn-primary btn-block btn-lg">Register</button>
-            </div>
-
-        </form>
+        </div>
     </div>
+</section>
+<!--/breadcrumb area-->
 
-</div>
-<!-- * App Capsule -->
+<!--Login Section -->
+<section class="section-padding blue-bg shaded-bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 centered">
+                <div class="section-title cl-white">
+                    <h4>Register account</h4>
+                </div>
+            </div>
+        </div>
+        @if ($errors->any())
+        <div class="alert alert-danger">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+        </div>
+        @endif
+        <div class="row justify-content-center">
+            <div class="col-xl-5 col-lg-5 col-md-6 col-sm-12">
+                <div class="site-form mb-30">
+                    <form method="POST" action="{{ route('register') }}">
+                        @csrf
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-sm-12">
+                                <input placeholder="Enter Full Name" id="text" type="text" class="@error('email') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-sm-12">
+                                <input placeholder="Enter Email Address" id="email" type="email" class="@error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-sm-12">
+                                <input placeholder="Enter Password" id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-sm-12">
+                                <input placeholder="Confirm Password" id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-sm-12">
+                                <button type="submit" class="bttn-mid btn-fill w-100">Register Account</button>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-sm-12">
+                                <div class="extra-links">
+                                    <div>
+                                        <a href="{{ route('login') }}">Login Now?</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section><!--/Login Section-->
+
 
 
 @endsection
