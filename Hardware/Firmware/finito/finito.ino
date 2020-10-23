@@ -156,20 +156,14 @@ String GenerateTransanctionToken(TRANSACTION *transaction){
   return output; 
 }
 
-void DisplayTransactionDone(TRANSACTION * transaction, int type){
-  display.init();
+void DisplayTransactionDone(TRANSACTION * transaction){
+  display.clear();
   display.setFont(ArialMT_Plain_16);
   display.setColor(WHITE);
   display.setTextAlignment(TEXT_ALIGN_LEFT);
-  if(type){
-    display.drawString(10, 3, transaction->amount + "\nreceived from\n" +  transaction->User->lname ); //Opeyemi \n 02344485"
-  } else {
-    display.drawString(10, 3, transaction->amount + "\nsent to\n" +  transaction->User->lname ); //Opeyemi \n 02344485"
-  }
-  
+  display.drawString(10, 3, transaction->amount + "\nsent to\n" +  transaction->User->lname ); //Opeyemi \n 02344485"
+  } 
   display.display();
-  display.clear();
-  trans_status = false;
 }
 
 void DisplayBalance(TRANSACTION * transaction){
