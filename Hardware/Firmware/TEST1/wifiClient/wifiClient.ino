@@ -12,7 +12,7 @@ const char* password = "peaceunity";
 //Your IP address or domain name with URL path
 const char* getTransactionToken  = "http://192.168.4.1/getTransactionToken";
 SSD1306 display(0x3C, 5, 4); // display(I2C Address, SDA_Pin, SCL_Pin)
-String transactionToken;
+
 
 /*********Function Prototypes**************************/
 void DisplayConnecting();
@@ -24,6 +24,8 @@ String httpGETRequest(const char* serverName);
 /****************Time***********************/
 unsigned long previousMillis = 0;
 const long interval = 5000;
+int transactionTokenNotSent = 1;
+String transactionToken;
 
 
 
@@ -38,7 +40,7 @@ void setup() {
   while(WiFi.status() != WL_CONNECTED) { 
     DisplayConnecting();
     delay(500);
-    Serial.print("Connecting...");
+    Serial.println("Connecting...");
   }
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");
@@ -51,11 +53,16 @@ void loop() {
 
   unsigned long currentMillis = millis();
   
+  
   if(currentMillis - previousMillis >= interval) {
      // Check WiFi connection status
     if(WiFi.status()== WL_CONNECTED ){ 
-      transactionToken = httpGETRequest(getTransactionToken);
-      Serial.println(transactionToken);
+      if (transactionTokenNotSent){
+          transactionToken = httpGETRequest(getTransactionToken);
+          Serial.println(transactionToken);
+          transactionTokenNotSent = 0;
+      }
+
        //DisplayTransactionDone(&transactionToken);
        DisplayConnected(String(WiFi.localIP()));
        previousMillis = currentMillis;

@@ -14,8 +14,10 @@ const char* password = "peaceunity";
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
+// Create display object
+SSD1306 display(0x3C, 5, 4); // display(I2C Address, SDA_Pin, SCL_Pin)
 
-String transactionToken = "---";
+//String transactionToken = "---";
 typedef struct USER{
   String fname;
   String lname;
@@ -38,6 +40,7 @@ typedef struct TRANSACTION{
 /******************************/
 USER user;
 TRANSACTION transaction;
+int done = 0;
 /*******************************/
 
 String GenerateTransanctionToken(TRANSACTION *transaction);
@@ -63,9 +66,9 @@ void setup(){
 
   // Serial port for debugging purposes
   Serial.begin(115200);
+  display.init();//Initiate onbaord OLED Display
   Serial.println();
-  display.init();
-
+  
   // Setting the ESP as an access point
   Serial.print("Setting AP (Access Point)…");
   //Remove the password parameter, if you want the AP (Access Point) to be open
@@ -76,8 +79,8 @@ void setup(){
   Serial.println(IP);
 
   server.on("/getTransactionToken", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/plain", transactionToken );
-    DisplayTransactionDone(&transaction);
+    request->send(200, "text/plain", GenerateTransanctionToken(&transaction) );
+    done = 1;
   });
   
   
@@ -87,7 +90,12 @@ void setup(){
 }
  
 void loop(){
-  void DisplayUserDetails(&Transaction->User);
+  DisplayUserDetails(transaction.User);
+  if(done){
+    DisplayTransactionDone(&transaction);
+    delay(2000);
+    done = 0;
+    }
 }
 
 String GenerateTransanctionToken(TRANSACTION *transaction){
@@ -107,7 +115,6 @@ String GenerateTransanctionToken(TRANSACTION *transaction){
   
   serializeJson(doc, output);
   Serial.println(output);
-  trans_status = true;
   
   return output; 
 }
