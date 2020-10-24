@@ -27,6 +27,66 @@ class PaymentController extends Controller
         }
     }
 
+    public function send(Request $request)
+    {
+        $number = $request->number;
+        $amount = $request->amount;
+        $user = DB::table('users')
+        ->where('number', $number)->first();
+        if($user == '' || $user->number == AUth::user()->number || $amount >= Auth::user()->wallet){
+            session()->flash('failure','Please check the transaction, something is wrong');
+            $user = User::find(Auth::user()->id);
+            return redirect()->route('home', [
+                'user' => $user,
+            ]);
+        }
+        return view('transfer', [
+            'trans' => $user,
+            'amount' => $amount
+        ]);
+    }
+
+    public function send_submit(Request $request)
+    {
+        $transaction = new Transaction();
+        $transaction->user_id  = Auth::user()->id;
+        $transaction->description = $request->description;
+        $transaction->amount = $request->amount;
+        $transaction->type = 'Transfer';
+        $transaction->method = 'Web';
+        $transaction->save();
+
+        $wallet = Auth::user()->wallet - $request->amount;
+
+
+        DB::table('users')
+        ->where('id', Auth::user()->id)
+        ->update(['wallet' => $wallet]);
+        //////
+        $transaction = new Transaction();
+        $transaction->user_id  = $request->id;
+        $transaction->description = $request->description;
+        $transaction->amount = $request->amount;
+        $transaction->type = 'Deposit';
+        $transaction->method = 'Web';
+        $transaction->save();
+
+        $wallet = $request->wallet + $request->amount;
+
+
+        DB::table('users')
+        ->where('id', $request->id)
+        ->update(['wallet' => $wallet]);
+        /////
+        session()->flash('success','Funds Sent');
+
+        $user = User::find(Auth::user()->id);
+
+        return redirect()->route('home', [
+            'user' => $user,
+        ]);
+    }
+
     /**
      * Obtain Paystack payment information
      * @return void

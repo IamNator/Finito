@@ -134,8 +134,11 @@
                                             </div>
                                             <div class="transaction-modal-details">
                                                 <div class="faq-contents">
-                                                    <form action="{{ route('pay') }}" method="post">
+                                                    <form action="{{ route('send') }}" method="post">
+                                                        @csrf
                                                         <div class="form-group">
+                                                            <input placeholder="Enter Amount" type="text" name="amount" id="amount" class="form-control">
+                                                            <br>
                                                             <input placeholder="Enter Account Number" type="text" name="number" id="number" class="form-control">
                                                         </div>
                                                         <button class="btn btn-success" type="submit">Continue</button>
