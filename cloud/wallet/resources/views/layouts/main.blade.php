@@ -57,10 +57,16 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">My Profile</a></li>
-                                <li><a class="dropdown-item" href="#">Settings</a></li>
-                                <li><a class="dropdown-item" href="#">Transactions</a></li>
-                                <li><a class="dropdown-item" href="#">LogOut</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault();
+                                              document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                     </a>
+                                </li>
+                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                 @csrf
+                             </form>
                             </ul>
                         </li>
                         @endauth

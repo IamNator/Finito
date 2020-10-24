@@ -49,6 +49,24 @@
     <!--Dashboard Bottom-->
     <section class="section-padding-sm-2 blue-bg-2">
         <div class="container">
+            @if (session('success'))
+    <div class="alert alert-success  alert-dismissible fade show" id="alert" role="alert">
+        <button type="button" id="close" class="close" data-dismiss="alert">x</button>
+        <li>
+            {{ session('success') }}
+        </li>
+    </div>
+@endif
+
+@if (session('failure'))
+    <div class="alert alert-danger alert-dismissible fade show" id="alert" role="alert">
+        <button type="button" id="close" class="close" data-dismiss="alert">x</button>
+       <li>
+           {{ session('failure') }}
+       </li>
+    </div>
+@endif
+
             <div class="row justify-content-center">
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 mb-20">
                     <div class="card mb-30">
@@ -82,16 +100,17 @@
                               </tr>
                             </thead>
                             <tbody>
+                                @forelse ($user['transactions'] as $trans )
                             <tr>
-                                @forelse ($user->transactions as $trans )
                                     <td><span>{{ $trans->created_at }}</span></td>
                                     <td><span>{{ $trans->description }}</span> - {{ $trans->type }}</td>
-                                    <td><span>{{ $trans->amount }}</span></td>
+                                    <td><span>NGN{{ $trans->amount }}</span></td>
                                     <td><span>{{ $trans->method }}</span></td>
-                                    @empty
-                                    <td>No Data Found</td>
-                                @endforelse
                             </tr>
+                            @empty
+                            <tr>No Data Found</tr>
+                            @endforelse
+
                             </tbody>
                         </table>
                         <!-- Transaction Details Modal -->
@@ -102,47 +121,25 @@
                                         <div class="col-sm-5 d-flex justify-content-center blue-bg-2 py-4">
                                             <div class="transaction-modal-left my-auto centered">
                                                 <div class="mb-30"><i class="flaticon-006-wallet"></i></div>
-                                                <h3 class="my-3">Padlock Holdings Bank Corp</h3>
-                                                <h4 class="cl-white my-4">$598.20</h4>
-                                                <p class="cl-white">10 Feb 2020</p>
-                                                <div class="completed">Completed</div>
+                                                <h3 class="my-3">Current Balance</h3>
+                                                <h4 class="cl-white my-4">NGN{{ Auth::user()->wallet }}</h4>
                                             </div>
                                         </div>
                                         <div class="col-sm-7">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="ModalCenter1Title">Transaction Details</h5>
+                                                <h5 class="modal-title" id="ModalCenter1Title">Send Funds</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="transaction-modal-details">
                                                 <div class="faq-contents">
-                                                    <ul class="accordion">
-                                                        <li>
-                                                            <a href="#">Transaction details</a>
-                                                            <p>
-                                                                <strong>Transaction ID</strong> <br><span>35791598</span><br><br>
-                                                                <strong>To</strong> <br><span>Namecheap Ltd.</span><br><br>
-                                                                <strong>Description</strong> <br><span>Domain Purchasing cost felis id rhoncus eros dui</span>
-                                                            </p>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">Transfer details</a>
-                                                            <p>
-                                                                <strong>Transfer ID</strong> <br><span>587935791598</span><br><br>
-                                                                <strong>Transfer amount</strong> <br><span>5,326.36 USD</span><br><br>
-                                                                <strong>Exchange rate</strong> <br><span>1 USD = 0.92 GBP</span>
-                                                            </p>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">Transaction history</a>
-                                                            <p>
-                                                                <strong>Completed</strong> <br><span>15 Feb 2020</span><br><br>
-                                                                <strong>Approved</strong> <br><span>15 Feb 2020</span><br><br>
-                                                                <strong>Under review</strong> <br><span>15 Feb 2020</span>
-                                                            </p>
-                                                        </li>
-                                                    </ul>
+                                                    <form action="{{ route('pay') }}" method="post">
+                                                        <div class="form-group">
+                                                            <input placeholder="Enter Account Number" type="text" name="number" id="number" class="form-control">
+                                                        </div>
+                                                        <button class="btn btn-success" type="submit">Continue</button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -159,47 +156,45 @@
                                         <div class="col-sm-5 d-flex justify-content-center blue-bg-2 py-4">
                                             <div class="transaction-modal-left my-auto centered">
                                                 <div class="mb-30"><i class="flaticon-006-wallet"></i></div>
-                                                <h3 class="my-3">Padlock Holdings Bank Corp</h3>
-                                                <h4 class="cl-white my-4">$598.20</h4>
-                                                <p class="cl-white">10 Feb 2020</p>
-                                                <div class="completed">Completed</div>
+                                                <h3 class="my-3">Account Number</h3>
+                                            <h4 class="cl-white my-4">{{ Auth::user()->number }}</h4>
                                             </div>
                                         </div>
                                         <div class="col-sm-7">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="ModalCenter2Title">Transaction Details</h5>
+                                                <h5 class="modal-title" id="ModalCenter2Title">Fund Account</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="transaction-modal-details">
                                                 <div class="faq-contents">
-                                                    <ul class="accordion">
-                                                        <li>
-                                                            <a href="#">Transaction details</a>
-                                                            <p>
-                                                                <strong>Transaction ID</strong> <br><span>35791598</span><br><br>
-                                                                <strong>To</strong> <br><span>Namecheap Ltd.</span><br><br>
-                                                                <strong>Description</strong> <br><span>Domain Purchasing cost felis id rhoncus eros dui</span>
-                                                            </p>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">Transfer details</a>
-                                                            <p>
-                                                                <strong>Transfer ID</strong> <br><span>587935791598</span><br><br>
-                                                                <strong>Transfer amount</strong> <br><span>5,326.36 USD</span><br><br>
-                                                                <strong>Exchange rate</strong> <br><span>1 USD = 0.92 GBP</span>
-                                                            </p>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">Transaction history</a>
-                                                            <p>
-                                                                <strong>Completed</strong> <br><span>15 Feb 2020</span><br><br>
-                                                                <strong>Approved</strong> <br><span>15 Feb 2020</span><br><br>
-                                                                <strong>Under review</strong> <br><span>15 Feb 2020</span>
-                                                            </p>
-                                                        </li>
-                                                    </ul>
+                                                    <form action="{{ route('pay') }}" method="post">
+                                                        @csrf
+
+                                                        @php
+                                                          // Available alpha caracters
+                                                         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+                                                        // generate a pin based on 2 * 7 digits + a random character
+                                                                $pin = mt_rand(10, 99)
+                                                                    . mt_rand(10, 99);
+                                                        // shuffle the result
+                                                                $number = str_shuffle($pin)
+                                                                . $characters[rand(0, strlen($characters) - 1)];
+                                                        @endphp
+                                                    <input type="hidden" name="email" value="{{ Auth::user()->email }}"> {{-- required --}}
+                                                    <input type="hidden" name="orderID" value="{{ $number }}">
+                                                        <input type="hidden" name="quantity" value="1">
+                                                        <input type="hidden" name="currency" value="NGN">
+                                                        <input type="hidden" name="metadata" value="{{ json_encode($array = ['user_id' => Auth::user()->id, 'description' => 'Wallet funding from dashboard', 'type' => 'Deposit']) }}" > {{-- For other necessary things you want to add to your payload. it is optional though --}}
+                                                        <input type="hidden" name="reference" value="{{ Paystack::genTranxRef() }}"> {{-- required --}}
+                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}"> {{-- employ this in place of csrf_field only in laravel 5.0 --}}
+                                                        <div class="form-group">
+                                                            <input placeholder="Enter amount in naira" type="text" name="amount" id="amount" class="form-control">
+                                                        </div>
+                                                        <button class="btn btn-success" type="submit">Fund</button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
