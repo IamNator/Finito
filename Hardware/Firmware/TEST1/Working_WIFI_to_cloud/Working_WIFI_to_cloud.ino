@@ -2,44 +2,69 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h> //For Handling Json diles
 
+#include "ESPAsyncWebServer.h"
+
+#define PASSWORD 45
+
   
-const char* ssid = "Opeyemi";
-const char* password =  "peaceunity";
+const char* ssid = "Galaxy";
+const char* password =  "hereNator";
+
+AsyncWebServer server(80);
 
 typedef struct USER{
   String fname;
   String lname;
-  String account_number;
-  String id;
   String balance;
-  String last_update_time;
-  String password;
+  String accountNumber;
+  String userID;
+  String lastUpdate;
 } USER;
 
+typedef struct TOKEN {
+  String userID1; //Creditor/Sender
+  String userID2; //Debitor/REceiver
+  String amount; //amount to be transfered
+} TOKEN;
 
-typedef struct TRANSACTION{
-  USER *User;
-  String amount;
-  String transactionID;
-  String transaction_time;
-  
-} TRANSACTION;
+//typedef struct tokenChain{
+//  TOKEN * tokenTree;   //an array of tokens
+//}
 
  USER user;
- TRANSACTION transaction;
+ TOKEN transactionToken;
+ 
+ 
 
 
-String GenerateTransanctionToken(TRANSACTION *transaction){
+//String GenerateTransanctionToken(TOKEN *transactionToken){
+//  // Use arduinojson.org/v6/assistant to compute the capacity.
+//  StaticJsonDocument<300> doc;
+//  doc["fname"] = transaction->User->fname;
+//  doc["lname"] = transaction->User->lname;
+//  doc["accountNumber"] = transaction->User->account_number;
+//  doc["userID"] = transaction->User->id;
+//  doc["amount"] = transaction->amount;
+//  doc["balance"] = transaction->User->balance;
+//  doc["time"] = transaction->transaction_time;
+//  doc["password"] = transaction->User->password;
+//
+//  
+//  String output;
+//  
+//  serializeJson(doc, output);
+// // Serial.println(output);
+//  
+//  return output; 
+//}
+
+String GenerateTransanctionToken(TOKEN *transactionToken){
   // Use arduinojson.org/v6/assistant to compute the capacity.
   StaticJsonDocument<300> doc;
-  doc["fname"] = transaction->User->fname;
-  doc["lname"] = transaction->User->lname;
-  doc["accountNumber"] = transaction->User->account_number;
-  doc["userID"] = transaction->User->id;
-  doc["amount"] = transaction->amount;
-  doc["balance"] = transaction->User->balance;
-  doc["time"] = transaction->transaction_time;
-  doc["password"] = transaction->User->password;
+  doc["userID1"] = transactionToken->userID1;
+  doc["userID2"] = transactionToken->userID2;
+  doc["amount"] = transactionToken->amount;
+  doc["password"] = PASSWORD;
 
   
   String output;
@@ -50,20 +75,32 @@ String GenerateTransanctionToken(TRANSACTION *transaction){
   return output; 
 }
 
+void UpdateUserDetails(USER * user){
+  StaticJsonDocument<200> doc;
+
+  DeserializationError error = deserializeJson(doc, json);
+
+  // Test if parsing succeeds.
+  if (error) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return;
+  }
+
+  user->fname = doc["fname"];
+  user->lname = doc["lname"];
+  user->userID = doc["userID"];
+  user->balance = doc["balance"];
+}
+
   
 void setup() { 
 
-  user.fname= "Opeyemi";
-  user.lname= "Oloruntegbe";
-  user.account_number = "024435439";
-  user.id = "1";
-  user.last_update_time = "43:43:554";
-  user.password = "****";
-
-  transaction.User = &user;
-  transaction.amount = "350000";
-  transaction.transactionID = "1";
-  transaction.transaction_time = "45:53:523";
+  user.userID = "1";
+  
+  transactionToken.userID1 = user.userID;
+  transactionToken.userID2 = "2";
+  transactionToken.amount = "24500";
 
   
   Serial.begin(115200);
@@ -89,7 +126,7 @@ void loop() {
    http.begin("http://finito-cloud.herokuapp.com/api/send");  //Specify destination for HTTP request
    http.addHeader("Content-Type", "application/json");             //Specify content-type header
   
-   String postData = String(GenerateTransanctionToken(&transaction));
+   String postData = String(GenerateTransanctionToken(&transactionToken));
    Serial.println(postData);
    delay(500);
    int httpResponseCode = http.POST(postData);   //Send the actual POST request
