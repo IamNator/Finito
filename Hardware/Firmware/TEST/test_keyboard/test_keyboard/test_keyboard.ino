@@ -16,6 +16,14 @@ void FalseAll(){
  userPressedCancel = false;
 }
 
+void gotTouch0(){
+ touchNumber = 0;
+}
+
+void gotTouch1(){
+ touchNumber = 1;
+}
+
 void gotTouch2(){
  touchNumber = 2;
 }
@@ -27,6 +35,11 @@ void gotTouch3(){
 void gotTouch4(){
  touchNumber = 4;
 }
+
+void gotTouch5(){
+ touchNumber = 5;
+}
+
 
 void gotTouch6(){
  touchNumber = 6;
@@ -76,23 +89,6 @@ void DisplayNumberEntered(){
 }
 
 
-int getInputFromUser(){
-
-  while (!userPressedEnter){
-    delay(350);
-    getUserInput();
-    
-    if (userPressedCancel){
-      userInputNumber = 0;
-    }
-    
-    DisplayNumberEntered();
-  }
- 
-  FalseAll();
-  return userInputNumber;
-}
-
 
 void DisplayFinito(){
     display.init();
@@ -107,59 +103,48 @@ void DisplayFinito(){
 }
 
 
+void DisplayNumber(int num){
+    display.init();
+    display.flipScreenVertically();
+    display.clear();
+    display.setFont(ArialMT_Plain_24);
+    display.setColor(WHITE);
+    display.setTextAlignment(TEXT_ALIGN_LEFT);
+    //transactionToken
+    display.drawString(16, 8, String(num) );
+    display.display();
+}
+
+
 void setup() { 
 
-  touchAttachInterrupt(T0, gotTouch2, threshold); //Number 0
-  touchAttachInterrupt(T1, gotTouch2, threshold); //Number 1
+  touchAttachInterrupt(T0, gotTouch0, threshold); //Number 0
+  touchAttachInterrupt(T1, gotTouch1, threshold); //Number 1
   touchAttachInterrupt(T2, gotTouch2, threshold); //Number 2
   touchAttachInterrupt(T3, gotTouch3, threshold); //Number 3
   touchAttachInterrupt(T4, gotTouch4, threshold); //Number 4
+  touchAttachInterrupt(T5, gotTouch5, threshold); //   Enter
   touchAttachInterrupt(T6, gotTouch6, threshold); //  Cancel
   
   display.init();//Initiate onbaord OLED Display
 
   DisplayFinito();
-  user.userID = "2";
-  
-  transactionToken.userID1 = user.userID;
-  transactionToken.userID2 = "1";
-  transactionToken.amount = "";
-
-  
+ 
   Serial.begin(115200);
   delay(4000);   //Delay needed before calling the WiFi.begin
   
-  
-  Serial.println(F("Connected to the WiFi network"));  
-
+  Serial.println(F("Device ready!"));
   
 }
 
+int last = 0;
   
 void loop() {
-  
-  if (MAKEPAYMENT == 10){ //Make Payment
-    transactionToken.amount = getAmountFromUser();
-    makePayment();
-    UpdateUserDetails(&user, httpgetUserDetails(user.userID));
-    UpdateUserDetails(&userDeptor, httpgetUserDetails(transactionToken.userID2));
-    DisplayTransactionDone(&transactionToken);
-    delay(5000);
-  } else if (MAKEPAYMENT == 20){ //Receive Payment
-    UpdateUserDetails(&user, httpgetUserDetails(user.userID));
-    UpdateUserDetails(&userDeptor, httpgetUserDetails(transactionToken.userID2));
-    DisplayUserDetails(&user);
-    delay(5000);  //Send a request every 10 seconds
-    //DisplayAmountReceived();
-  }
 
-  DisplayFinito();
-  delay(5000);
-  while(1){
-    UpdateUserDetails(&user, httpgetUserDetails(user.userID));
-    DisplayUserBalance(&user);
-    delay(3000);
-  }
-  
-  
+    if (touchNumber != last){
+        Serial.println(touchNumber);
+        DisplayNumberEntered();
+        DisplayNumber(touchNumber);
+        last = touchNumber;
+    }
 }
