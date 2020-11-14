@@ -2,6 +2,8 @@
 #include "Wire.h"
 #include "SSD1306.h"  //For display
 
+SSD1306 display(0x3C, 5, 4); // display(I2C Address, SDA_Pin, SCL_Pin)
+
 
 volatile int userInputNumber = 0;
 int threshold = 50; //The Bigger the threshold, the more sensible is the touch
@@ -32,21 +34,31 @@ void gotTouch6(){
 
 void getUserInput(){
   switch(touchNumber){
+    case 0:
+      userInputNumber = 0;
+      break;
+    case 1:
+      userInputNumber = 1;
+      break;
     case 2:
-      userInputNumber +=10;
+      userInputNumber = 2;
       break;
     case 3: 
-      if (userInputNumber <= 0){
-        userInputNumber = 0;
-      } else{
-        userInputNumber -=10; 
-      }
+      userInputNumber = 3;
+      break;
+    case 4:
+      userInputNumber = 4;
+      break;
+    case 5:
+      userPressedEnter = true;
+      userInputNumber = 5;
       break;
     case 6:
       userPressedCancel = true;
+      userInputNumber = 6;
       break;
-    case 4:
-      userPressedEnter = true;
+    default :
+      Serial.println("Key not included");
       break;
   }
       touchNumber = 0;
@@ -94,117 +106,15 @@ void DisplayFinito(){
     display.display();
 }
 
-int getUserPassword(){
-
-    display.init();
-    //display.flipScreenVertically();  
-    while (!userPressedEnter){
-      delay(300);
-      getUserInput();
-      
-      if (userPressedCancel){
-        userInputNumber = 0;
-      }
-      
-      
-      display.flipScreenVertically(); 
-      display.setFont(ArialMT_Plain_16);
-      display.setColor(WHITE);
-      display.setTextAlignment(TEXT_ALIGN_LEFT);
-      display.drawString(16, 4, "Enter Password\n" + String(userInputNumber) );
-      display.display();
-      display.clear();
-  }
- 
-  FalseAll();
-  return userInputNumber;
-}
-
-int CheckPassword(int password){
-  if (password == PASSWORD){
-    return 1;
-  } else {
-    return 0;
-  }
-}
-
-int getTransactionType(){
-  display.init();
-  display.flipScreenVertically();  
-    userInputNumber = 0;
-    while (!userPressedEnter){
-      delay(300);
-      getUserInput();
-     
-      if (userPressedCancel){
-        userInputNumber = 0;
-      }
-      
-      
-      display.clear();
-      display.setFont(ArialMT_Plain_16);
-      display.setColor(WHITE);
-      display.setTextAlignment(TEXT_ALIGN_LEFT);
-      display.drawString(16, 4, "Payment Type\n" + String(userInputNumber) );
-      display.display();
-  }
- 
-  FalseAll();
-  return userInputNumber;
-}
-
-int getAmountFromUser(){
-     display.init();
-     display.flipScreenVertically(); 
-     userInputNumber = 0;  
-     userPressedEnter = false;
-     int no_user_pressed_enter = 0;
-     
-    while (no_user_pressed_enter<2){
-      
-      if(userPressedEnter){
-        no_user_pressed_enter +=1;
-      }
-      
-      delay(300);
-      getUserInput();
-      
-      if (userPressedCancel){
-        userInputNumber = 0;
-      }
-      
-      
-      display.clear();
-      display.setFont(ArialMT_Plain_16);
-      display.setColor(WHITE);
-      display.setTextAlignment(TEXT_ALIGN_LEFT);
-      display.drawString(16, 4, "Enter Amount\n" + String(userInputNumber) );
-      display.display();
-    }
-
-    FalseAll();
-    return userInputNumber;
-}
-
-void DisplayUserBalance(USER *user){
-    display.init();
-    display.flipScreenVertically();
-    display.clear();
-    display.setFont(ArialMT_Plain_24);
-    display.setColor(WHITE);
-    display.setTextAlignment(TEXT_ALIGN_LEFT);
-    //transactionToken
-    display.drawString(16, 8, "Balance \n" + String(user->balance) );
-    display.display();
-    Serial.println(user->balance);
-}
 
 void setup() { 
 
-  touchAttachInterrupt(T2, gotTouch2, threshold);
-  touchAttachInterrupt(T3, gotTouch3, threshold);
-  touchAttachInterrupt(T4, gotTouch4, threshold);
-  touchAttachInterrupt(T6, gotTouch6, threshold);
+  touchAttachInterrupt(T0, gotTouch2, threshold); //Number 0
+  touchAttachInterrupt(T1, gotTouch2, threshold); //Number 1
+  touchAttachInterrupt(T2, gotTouch2, threshold); //Number 2
+  touchAttachInterrupt(T3, gotTouch3, threshold); //Number 3
+  touchAttachInterrupt(T4, gotTouch4, threshold); //Number 4
+  touchAttachInterrupt(T6, gotTouch6, threshold); //  Cancel
   
   display.init();//Initiate onbaord OLED Display
 
@@ -219,34 +129,12 @@ void setup() {
   Serial.begin(115200);
   delay(4000);   //Delay needed before calling the WiFi.begin
   
-  WiFi.begin(ssid, password); 
-  
-  while (WiFi.status() != WL_CONNECTED) { //Check for the connection
-    delay(1000);
-    Serial.println(F("Connecting to WiFi.."));
-  }
   
   Serial.println(F("Connected to the WiFi network"));  
 
-  int user_password = 0;
-
-  
-  
-  while(!CheckPassword(user_password)){
-     user_password = getUserPassword();
-     delay(1000);
-  }
-
-
-
-  MAKEPAYMENT = 0;
-  while( (MAKEPAYMENT != 10) && (MAKEPAYMENT != 20)  ){
-     MAKEPAYMENT = getTransactionType();
-     delay(1000);
-  }
-  
   
 }
+
   
 void loop() {
   
