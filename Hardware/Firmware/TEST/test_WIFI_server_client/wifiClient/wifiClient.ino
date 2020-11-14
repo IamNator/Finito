@@ -5,12 +5,14 @@
 #include <WiFi.h>
 #include <HTTPClient.h>  //onboard oled screen
 
+#include <ArduinoJson.h> 
+
 
 const char* ssid = "Opeyemi";
 const char* password = "peaceunity";
 
-String fname = "Nator"
-String lname = "Paul"
+String fname = "Nator";
+String lname = "Paul";
 
 //Your IP address or domain name with URL path
 const char* getTransactionToken  = "http://192.168.4.1/getTransactionToken";
@@ -63,6 +65,7 @@ void DisplayUserDetails(){
   display.setFont(ArialMT_Plain_16);
   display.setColor(WHITE);
   display.setTextAlignment(TEXT_ALIGN_LEFT);
+  String accountNumber = "50000000";
   display.drawString(16, 8, fname + " \n" + accountNumber );
   display.display();
 }
@@ -77,6 +80,7 @@ void DisplayReadyToReceive(){
 }
 
 void DisplayTransactionReceived(String *transactionToken){
+    StaticJsonDocument<700> doc;
     DeserializationError error = deserializeJson(doc, *transactionToken);
     //Test if parsing succeeds.
     if (error) {
