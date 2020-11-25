@@ -24,7 +24,7 @@ typedef struct USER{
 
 typedef struct TOKEN {
   String userID1; //Creditor/Sender
-  String userID2; //Debitor/Receiver
+  String userID2; //Debitor/REceiver
   String amount; //amount to be transfered
 } TOKEN;
 
@@ -70,7 +70,7 @@ void getUserInput(){
     case 2:
       userInputNumber +=10;
       break;
-    case 3:
+    case 3: 
       if (userInputNumber <= 0){
         userInputNumber = 0;
       } else{
@@ -146,6 +146,7 @@ String httpgetUserDetails(String userID){
     int httpCode = http.GET();                                        //Make the request
  
     if (httpCode > 0) { //Check for the returning code
+ 
         payload = http.getString();
         Serial.println(httpCode);
         Serial.println(payload);
@@ -154,7 +155,7 @@ String httpgetUserDetails(String userID){
     else {
       Serial.println("Error on HTTP request");
     }
-
+ 
     http.end(); //Free the resources
   }
  
@@ -336,8 +337,8 @@ int getAmountFromUser(){
       if (userPressedCancel){
         userInputNumber = 0;
       }
-
-
+      
+      
       display.clear();
       display.setFont(ArialMT_Plain_16);
       display.setColor(WHITE);
@@ -363,41 +364,44 @@ void DisplayUserBalance(USER *user){
     Serial.println(user->balance);
 }
 
-void setup() {
+void setup() { 
 
   touchAttachInterrupt(T2, gotTouch2, threshold);
   touchAttachInterrupt(T3, gotTouch3, threshold);
   touchAttachInterrupt(T4, gotTouch4, threshold);
   touchAttachInterrupt(T6, gotTouch6, threshold);
-
+  
   display.init();//Initiate onbaord OLED Display
 
   DisplayFinito();
   user.userID = "2";
-
+  
   transactionToken.userID1 = user.userID;
   transactionToken.userID2 = "1";
   transactionToken.amount = "";
 
-
+  
   Serial.begin(115200);
   delay(4000);   //Delay needed before calling the WiFi.begin
-
-  WiFi.begin(ssid, password);
-
+  
+  WiFi.begin(ssid, password); 
+  
   while (WiFi.status() != WL_CONNECTED) { //Check for the connection
     delay(1000);
     Serial.println(F("Connecting to WiFi.."));
   }
+  
+  Serial.println(F("Connected to the WiFi network"));  
 
-  Serial.println(F("Connected to the WiFi network"));
   int user_password = 0;
 
-
+  
+  
   while(!CheckPassword(user_password)){
      user_password = getUserPassword();
      delay(1000);
   }
+
 
 
   MAKEPAYMENT = 0;
@@ -406,11 +410,11 @@ void setup() {
      delay(1000);
   }
   
-
+  
 }
   
 void loop() {
-
+  
   if (MAKEPAYMENT == 10){ //Make Payment
     transactionToken.amount = getAmountFromUser();
     makePayment();
