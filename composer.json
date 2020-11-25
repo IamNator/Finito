@@ -1,0 +1,5 @@
+{
+    "require": {
+        "unicodeveloper/laravel-paystack": "^1.0"
+    }
+}
