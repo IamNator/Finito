@@ -5,8 +5,8 @@
 SSD1306 display(0x3C, 5, 4); // display(I2C Address, SDA_Pin, SCL_Pin)
 
 
-volatile int userInputNumber = 0;
 int threshold = 50; //The Bigger the threshold, the more sensible is the touch
+volatile int userInputNumber = 0;
 volatile bool userPressedEnter = false;
 volatile bool userPressedCancel = false;
 volatile int touchNumber = 0;
@@ -118,8 +118,8 @@ void DisplayNumber(int num){
 
 void setup() { 
 
-  touchAttachInterrupt(T0, gotTouch0, threshold); //Number 0
-  touchAttachInterrupt(T1, gotTouch1, threshold); //Number 1
+  touchAttachInterrupt(T0, gotTouch0, 0); //Number 0
+  touchAttachInterrupt(T1, gotTouch1, 0); //Number 1
   touchAttachInterrupt(T2, gotTouch2, threshold); //Number 2
   touchAttachInterrupt(T3, gotTouch3, threshold); //Number 3
   touchAttachInterrupt(T4, gotTouch4, threshold); //Number 4
@@ -137,7 +137,7 @@ void setup() {
   
 }
 
-int last = 0;
+int last = 0; 
   
 void loop() {
 
